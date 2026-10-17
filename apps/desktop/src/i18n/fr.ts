@@ -1539,7 +1539,13 @@ export const frOverrides = {
       screenRecording: "Enregistrement de l'écran",
       driverHealth: 'État du pilote'
     },
-    about: { updates: 'Mises à jour', channel: frUpdateChannel },
+    about: {
+      updates: 'Mises à jour',
+      disableAutomaticUpdates: 'Désactiver les mises à jour automatiques',
+      disableAutomaticUpdatesDesc:
+        'Hermes ne recherchera plus automatiquement les mises à jour. Vous pourrez toujours les rechercher et les installer manuellement. Les mises à jour gérées par Windows ou un gestionnaire de paquets ne sont pas concernées.',
+      channel: frUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'Réduire dans la barre d’état',
       minimizeToTrayDesc:

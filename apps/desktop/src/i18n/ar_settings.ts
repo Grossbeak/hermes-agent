@@ -518,6 +518,9 @@ export const arSettings = {
     },
     about: {
       updates: 'التحديثات',
+      disableAutomaticUpdates: 'تعطيل التحديثات التلقائية',
+      disableAutomaticUpdatesDesc:
+        'سيتوقف Hermes عن التحقق تلقائياً من التحديثات. يظل بإمكانك التحقق منها وتثبيتها يدوياً. لا يؤثر هذا الخيار في التحديثات التي يديرها Windows أو مدير الحزم.',
       channel: arUpdateChannel
     },
 

@@ -900,7 +900,13 @@ export const jaOverrides = {
           'アプリから Hermes 自身を更新するとき、ローカルのソース変更を保持するか破棄するかを選びます。ターミナル更新では常に確認されます。'
       }
     }),
-    about: { updates: '更新', channel: jaUpdateChannel },
+    about: {
+      updates: '更新',
+      disableAutomaticUpdates: '自動更新を無効にする',
+      disableAutomaticUpdatesDesc:
+        'Hermes による自動更新チェックを停止します。手動での確認とインストールは引き続き利用できます。Windows やパッケージマネージャーが管理する更新には影響しません。',
+      channel: jaUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'トレイに最小化',
       minimizeToTrayDesc:

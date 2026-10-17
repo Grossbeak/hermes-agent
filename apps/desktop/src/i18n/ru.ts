@@ -917,7 +917,13 @@ export const ruOverrides = {
           'Когда Hermes обновляет себя из приложения (без запроса в терминале), сохранять локальные правки исходников (stash) или выбрасывать (discard). Обновления из терминала всегда спрашивают.'
       }
     }),
-    about: { updates: 'Обновления', channel: ruUpdateChannel },
+    about: {
+      updates: 'Обновления',
+      disableAutomaticUpdates: 'Отключить автоматические обновления',
+      disableAutomaticUpdatesDesc:
+        'Hermes перестанет автоматически проверять обновления. Проверка и установка вручную останутся доступны. Это не отключает обновления, которыми управляют Windows или менеджер пакетов.',
+      channel: ruUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'Сворачивать в трей',
       minimizeToTrayDesc:

@@ -141,6 +141,8 @@ export function useStatusbarItems({
   const copy = t.shell.statusbar
   const freeTierCopy = t.freeTier
   const fileMenu = t.fileMenu
+  const emptyWorkspaceLabel = t.sidebar.noWorkspace
+  const changeCwdTitle = t.rightSidebar.changeCwdTitle
   const primaryActiveSessionId = useStore($activeSessionId)
   const activeGatewayProfile = useStore($activeGatewayProfile)
   // What the button paints and flips is whether the terminal is ON SCREEN —
@@ -544,16 +546,17 @@ export function useStatusbarItems({
         variant: 'action'
       },
       {
-        hidden: !currentCwd,
+        disabled: !currentCwd && (changeWorkspaceItem.disabled || changeWorkspaceItem.hidden),
         icon: <FolderOpen className="size-3" />,
         id: 'workspace-cwd',
         // Prefer the named project; fall back to the cwd leaf. Hover tip uses
         // the shared display formatter (home → ~) so statusbar and branch bar
         // agree on how a path looks.
-        label: projectName || (currentCwd ? pathLeaf(currentCwd) : undefined),
-        menuItems: currentCwd
-          ? [
-              changeWorkspaceItem,
+        label: projectName || (currentCwd ? pathLeaf(currentCwd) : emptyWorkspaceLabel),
+        menuItems: [
+          changeWorkspaceItem,
+          ...(currentCwd
+            ? [
               {
                 id: 'copy-workspace-path',
                 label: fileMenu.copyPath,
@@ -581,10 +584,12 @@ export function useStatusbarItems({
                 title: displayPath(currentCwd)
               }
             ]
-          : undefined,
-        title: currentCwd ? displayPath(currentCwd) : undefined,
+            : [])
+        ],
+        onSelect: currentCwd ? undefined : () => changeWorkspaceItem.onSelect?.(),
+        title: currentCwd ? displayPath(currentCwd) : changeCwdTitle,
         toggleLabel: copy.toggleWorkspace,
-        variant: 'menu'
+        variant: currentCwd ? 'menu' : 'action'
       },
       {
         className: cn(
@@ -632,10 +637,12 @@ export function useStatusbarItems({
     [
       agentsOpen,
       botsShowing,
+      changeCwdTitle,
       changeWorkspaceItem,
       commandCenterOpen,
       copy,
       currentCwd,
+      emptyWorkspaceLabel,
       focusedWorkspaceRemote,
       freeTierCopy,
       fileMenu.copyPath,

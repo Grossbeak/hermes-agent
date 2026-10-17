@@ -1187,7 +1187,13 @@ export const en: Translations = {
       screenRecording: 'Screen Recording',
       driverHealth: 'Driver health'
     },
-    about: { updates: 'Updates', channel: enUpdateChannel },
+    about: {
+      updates: 'Updates',
+      disableAutomaticUpdates: 'Disable automatic updates',
+      disableAutomaticUpdatesDesc:
+        'Hermes will stop checking for updates automatically. You can still check for and install updates manually. Updates managed by Windows or a package manager are unaffected.',
+      channel: enUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'Minimize to tray',
       minimizeToTrayDesc:

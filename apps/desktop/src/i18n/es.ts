@@ -1535,7 +1535,13 @@ export const esOverrides = {
       screenRecording: 'Grabación de pantalla',
       driverHealth: 'Estado del controlador'
     },
-    about: { updates: 'Actualizaciones', channel: esUpdateChannel },
+    about: {
+      updates: 'Actualizaciones',
+      disableAutomaticUpdates: 'Desactivar actualizaciones automáticas',
+      disableAutomaticUpdatesDesc:
+        'Hermes dejará de buscar actualizaciones automáticamente. Aún podrás buscarlas e instalarlas manualmente. Esto no afecta a las actualizaciones gestionadas por Windows o un gestor de paquetes.',
+      channel: esUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'Minimizar a la bandeja',
       minimizeToTrayDesc:

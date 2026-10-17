@@ -1,12 +1,19 @@
 import { useStore } from '@nanostores/react'
 import { type ReactElement, useEffect } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox'
 import { UpdateStatusCard, VersionHero } from '@/components/update-status'
 import { VersionDetails } from '@/components/version-details'
 import { useI18n } from '@/i18n'
 import { RefreshCw } from '@/lib/icons'
 import { $connection } from '@/store/session'
-import { $desktopVersion, checkBackendUpdates, refreshDesktopVersion } from '@/store/updates'
+import {
+  $automaticUpdatesDisabled,
+  $desktopVersion,
+  checkBackendUpdates,
+  refreshDesktopVersion,
+  setAutomaticUpdatesDisabled
+} from '@/store/updates'
 
 import { SectionHeading, SettingsContent } from './primitives'
 import { SETTING_IDS, settingElementId } from './settings-manifest'
@@ -41,15 +48,16 @@ function AppUpdatesSettings({ includeUninstall }: AppUpdatesSettingsProps): Reac
   const version = useStore($desktopVersion)
   const connection = useStore($connection)
   const remote = connection?.mode === 'remote'
+  const automaticUpdatesDisabled = useStore($automaticUpdatesDisabled)
 
   // Refresh the running version when About opens or the active gateway changes.
   useEffect((): void => {
     void refreshDesktopVersion()
 
-    if (remote) {
+    if (remote && !automaticUpdatesDisabled) {
       void checkBackendUpdates()
     }
-  }, [connection, remote])
+  }, [automaticUpdatesDisabled, connection, remote])
 
   return (
     <SettingsContent>
@@ -57,6 +65,18 @@ function AppUpdatesSettings({ includeUninstall }: AppUpdatesSettingsProps): Reac
       <div className="mx-auto mt-4 w-full max-w-2xl">
         <SectionHeading icon={RefreshCw} title={t.settings.about.updates} />
         <div className="grid gap-3" id={settingElementId(SETTING_IDS.about.updates)}>
+          <label className="flex cursor-pointer items-start gap-2.5">
+            <Checkbox
+              aria-label={t.settings.about.disableAutomaticUpdates}
+              checked={automaticUpdatesDisabled}
+              className="mt-0.5"
+              onCheckedChange={checked => setAutomaticUpdatesDisabled(checked === true)}
+            />
+            <span className="grid min-w-0 gap-0.5">
+              <span className="text-sm font-medium">{t.settings.about.disableAutomaticUpdates}</span>
+              <span className="text-xs text-muted-foreground">{t.settings.about.disableAutomaticUpdatesDesc}</span>
+            </span>
+          </label>
           <UpdateStatusCard target="client" />
           <UpdateChannelRow />
           {/* Client and remote backend updates are independent. Only the client has release notes. */}

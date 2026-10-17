@@ -1532,7 +1532,13 @@ export const deOverrides = {
       screenRecording: 'Bildschirmaufnahme',
       driverHealth: 'Treiberstatus'
     },
-    about: { updates: 'Updates', channel: deUpdateChannel },
+    about: {
+      updates: 'Updates',
+      disableAutomaticUpdates: 'Automatische Updates deaktivieren',
+      disableAutomaticUpdatesDesc:
+        'Hermes sucht nicht mehr automatisch nach Updates. Manuelle Suche und Installation bleiben verfügbar. Von Windows oder einem Paketmanager verwaltete Updates sind davon nicht betroffen.',
+      channel: deUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: 'In den Infobereich minimieren',
       minimizeToTrayDesc:

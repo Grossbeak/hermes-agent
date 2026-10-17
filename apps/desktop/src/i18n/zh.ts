@@ -1243,7 +1243,12 @@ export const zhOverrides = {
       screenRecording: '屏幕录制',
       driverHealth: '驱动健康状态'
     },
-    about: { updates: '更新', channel: zhUpdateChannel },
+    about: {
+      updates: '更新',
+      disableAutomaticUpdates: '关闭自动更新',
+      disableAutomaticUpdatesDesc: 'Hermes 将停止自动检查更新。你仍可手动检查并安装更新。此设置不影响由 Windows 或包管理器管理的更新。',
+      channel: zhUpdateChannel
+    },
     config: {
       minimizeToTrayTitle: '最小化到托盘',
       minimizeToTrayDesc:

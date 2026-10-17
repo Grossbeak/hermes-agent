@@ -19,7 +19,7 @@ import type {
 } from '@/global'
 import { checkHermesUpdate, getActionStatus, updateHermes } from '@/hermes'
 import { translateNow } from '@/i18n'
-import { persistString, storedString } from '@/lib/storage'
+import { persistBoolean, persistString, storedBoolean, storedString } from '@/lib/storage'
 import { $connectionsRegistry, refreshConnectionsRegistry } from '@/store/connections'
 import { reconnectGateway } from '@/store/gateway-reconnect'
 import { dismissNotification, notify } from '@/store/notifications'
@@ -52,6 +52,25 @@ const IDLE: UpdateApplyState = {
   error: null,
   command: null,
   log: []
+}
+
+const AUTOMATIC_UPDATES_DISABLED_KEY = 'hermes.updates.automatic-disabled'
+
+export const $automaticUpdatesDisabled = atom(
+  typeof window !== 'undefined' && storedBoolean(AUTOMATIC_UPDATES_DISABLED_KEY, false)
+)
+
+if (typeof window !== 'undefined') {
+  $automaticUpdatesDisabled.subscribe(disabled => persistBoolean(AUTOMATIC_UPDATES_DISABLED_KEY, disabled))
+  window.addEventListener('storage', event => {
+    if (event.key === AUTOMATIC_UPDATES_DISABLED_KEY) {
+      $automaticUpdatesDisabled.set(storedBoolean(AUTOMATIC_UPDATES_DISABLED_KEY, false))
+    }
+  })
+}
+
+export function setAutomaticUpdatesDisabled(disabled: boolean): void {
+  $automaticUpdatesDisabled.set(disabled)
 }
 
 export const $desktopVersion = atom<DesktopVersionInfo | null>(null)
@@ -547,6 +566,10 @@ let backendCheckPendingKey: string | undefined
 export async function checkBackendUpdates({
   force = false
 }: UpdateCheckOptions = {}): Promise<DesktopUpdateStatus | null> {
+  if ($automaticUpdatesDisabled.get() && !force) {
+    return $backendUpdateStatus.get()
+  }
+
   if (!isRemoteMode()) {
     return $backendUpdateStatus.get()
   }
@@ -567,6 +590,10 @@ export async function checkBackendUpdates({
   try {
     const status = mapBackendCheck(await checkHermesUpdate(force))
 
+    if ($automaticUpdatesDisabled.get() && !force) {
+      return $backendUpdateStatus.get()
+    }
+
     if (connectionKey($connection.get()) === requestKey) {
       $backendUpdateStatus.set(status)
       maybeNotifyUpdateAvailable(status, 'backend')
@@ -574,6 +601,9 @@ export async function checkBackendUpdates({
 
     return status
   } catch (error) {
+    if ($automaticUpdatesDisabled.get() && !force) {
+      return $backendUpdateStatus.get()
+    }
     const fallback: DesktopUpdateStatus = {
       supported: $backendUpdateStatus.get()?.supported ?? true,
       error: 'check-failed',
@@ -603,6 +633,10 @@ export async function checkBackendUpdates({
 }
 
 export async function checkUpdates({ force = false }: UpdateCheckOptions = {}): Promise<DesktopUpdateStatus | null> {
+  if ($automaticUpdatesDisabled.get() && !force) {
+    return $updateStatus.get()
+  }
+
   const bridge = window.hermesDesktop?.updates
 
   if (!bridge || $updateChecking.get()) {
@@ -613,6 +647,10 @@ export async function checkUpdates({ force = false }: UpdateCheckOptions = {}): 
 
   try {
     const status = await bridge.check({ force })
+
+    if ($automaticUpdatesDisabled.get() && !force) {
+      return $updateStatus.get()
+    }
     $updateStatus.set(status)
 
     if (status.retirement) {
@@ -624,6 +662,9 @@ export async function checkUpdates({ force = false }: UpdateCheckOptions = {}): 
 
     return status
   } catch (error) {
+    if ($automaticUpdatesDisabled.get() && !force) {
+      return $updateStatus.get()
+    }
     const previous = $updateStatus.get()
 
     const fallback: DesktopUpdateStatus = {
@@ -1332,6 +1373,10 @@ function passiveCheckDue(now: number): boolean {
 }
 
 function runPassiveChecks(): void {
+  if ($automaticUpdatesDisabled.get()) {
+    return
+  }
+
   persistString(FOCUS_RECHECK_KEY, String(Date.now()))
   void checkUpdates()
   void checkBackendUpdates()
